@@ -1,5 +1,7 @@
 var currentScene = 1;
 
+var f = createFont("monospace");
+
 var Button = function(config) {//button class
     this.x = config.x || 0;
     this.y = config.y || 0;
@@ -8,16 +10,22 @@ var Button = function(config) {//button class
     this.label = config.label || "Click";
 };
 
-var startButton = new Button({//start button
+var startButton1 = new Button({//start button 1 player
     x: 125,
-    y: 300,
-    label: "START"
+    y: 255,
+    label: "1 Player"
+});
+
+var startButton2 = new Button({//start button 2 player
+    x: 125,
+    y: 325,
+    label: "2 Player"
 });
 
 Button.prototype.draw= function() {
-    fill(0, 55, 255);
+    fill(12, 242, 238);
     rect(this.x, this.y, this.width, this.height);
-    fill(255, 255, 255);
+    fill(0, 0, 0);
     textSize(30);
     textAlign(CENTER,CENTER);
     text(this.label, this.x+this.width/2, this.y+this.height/2);
@@ -31,7 +39,7 @@ var drawHead = function(bodyX,bodyY,bitHeight){
     fill(252, 212, 192);
     ellipse(bodyX,bodyY,bitHeight/50*83,bitHeight/50*110); //head
 
-    fill(255, 255, 255);
+    fill(0, 0, 0);
     arc(bodyX-(bitHeight/50*46),bodyY+(bitHeight/50*47),bitHeight/50*42,bitHeight/50*67,280,361); //left chisel
     arc(bodyX+(bitHeight/50*45),bodyY+(bitHeight/50*47),bitHeight/50*42,bitHeight/50*67,180,261); //right chisel
 };//functions to draw bitmoji
@@ -150,24 +158,26 @@ var drawBitmoji1 = function(bitmojiX,bitmojiY,h){
     }; //Bitmoji
 
 var splashScreen = function(){//start screen
-    background(255, 255, 255);
-    textSize(50);
-    fill(0, 55, 255);
+    background(0, 0, 0);
+    textFont(f);
+    textSize(42);
+    fill(12, 242, 238);
     textAlign(CENTER,CENTER);
     text("Bitmoji Asteroid",200,50);
     textSize(20);
     text("By: Alex Bergeron & Jacob Hyun",200,100);
-    text("Click START",200, 141);
+    text("Click START",200, 230);
     textSize(25);
-    startButton.draw();
-    drawBitmoji1(69,325,60);
+    startButton1.draw();
+    startButton2.draw();
+    drawBitmoji1(69,302,60);
     noStroke();
-    drawBitmoji(336,325,30);
+    drawBitmoji(336,302,30);
     
 };
 
 mouseClicked = function(){
-    if(startButton.isMouseInside()){
+    if(startButton1.isMouseInside()){
         currentScene = 2;
     }
 };
@@ -175,3 +185,9 @@ mouseClicked = function(){
 if(currentScene === 1){
     splashScreen();
 }
+
+var draw = function() {
+    if (currentScene === 2){
+        background(0, 0, 0);
+    }
+};
