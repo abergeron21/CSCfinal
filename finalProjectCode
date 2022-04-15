@@ -2,6 +2,8 @@ var currentScene = 1;
 
 var f = createFont("monospace");
 
+var obstacleSize = 30;
+
 var Button = function(config) {//button class
     this.x = config.x || 0;
     this.y = config.y || 0;
@@ -9,6 +11,18 @@ var Button = function(config) {//button class
     this.height = config.height || 50;
     this.label = config.label || "Click";
 };
+
+var Obstacle = function(x,y){//object class for obstacles
+    this.x = x;
+    this.y = y;
+    this.img = getImage("cute/Rock");
+};
+
+Obstacle.prototype.draw = function() {
+    image(this.img, this.x, this.y, obstacleSize, obstacleSize);
+};
+
+var obstacles = []; //array for obstacles
 
 var startButton1 = new Button({//start button 1 player
     x: 125,
@@ -179,6 +193,9 @@ var splashScreen = function(){//start screen
 mouseClicked = function(){
     if(startButton1.isMouseInside()){
         currentScene = 2;
+    }
+    if(startButton2.isMouseInside()){
+        currentScene = 3;   
     }
 };
 
