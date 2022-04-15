@@ -2,6 +2,8 @@ var currentScene = 1;
 
 var f = createFont("monospace");
 
+var color1 = color(12, 242, 238);
+
 var obstacleSize = 30;
 
 var Button = function(config) {//button class
@@ -37,7 +39,7 @@ var startButton2 = new Button({//start button 2 player
 });
 
 Button.prototype.draw= function() {
-    fill(12, 242, 238);
+    fill(color1);
     rect(this.x, this.y, this.width, this.height);
     fill(0, 0, 0);
     textSize(30);
@@ -175,7 +177,7 @@ var splashScreen = function(){//start screen
     background(0, 0, 0);
     textFont(f);
     textSize(42);
-    fill(12, 242, 238);
+    fill(color1);
     textAlign(CENTER,CENTER);
     text("Bitmoji Asteroid",200,50);
     textSize(20);
@@ -190,20 +192,51 @@ var splashScreen = function(){//start screen
     
 };
 
+var onePlayerScreen = function(){
+    
+};
+
+var twoPlayerScreen = function(){
+      
+};
+
+var gameOverScreen = function(){
+    background(0, 0, 0);
+    textAlign(CENTER,CENTER);
+    textSize(46);
+    fill(255, 0, 0);
+    text("GAME OVER", 200, 100);
+    textSize(30);
+    text("Click to Restart", 200, 250);
+};
+
 mouseClicked = function(){
     if(startButton1.isMouseInside()){
         currentScene = 2;
     }
-    if(startButton2.isMouseInside()){
+    else if(startButton2.isMouseInside()){
         currentScene = 3;   
     }
+    else if(currentScene === 5){
+        currentScene = 1;   
+    }
 };
-
-if(currentScene === 1){
-    splashScreen();
-}
-
 var draw = function() {
+    if(currentScene === 1){//start screen
+        splashScreen();
+    }
+    else if(currentScene === 2){//select player 1 player screen
+    
+    }
+    else if(currentScene === 3){//2 player screen
+        
+    }
+    else if(currentScene === 4){//game screen
+        
+    }
+    else if(currentScene === 5){//game over screen
+        gameOverScreen();
+    }
     if (currentScene === 2){
         background(0, 0, 0);
     }
