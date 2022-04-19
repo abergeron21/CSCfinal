@@ -4,7 +4,11 @@ var f = createFont("monospace");
 
 var color1 = color(12, 242, 238);
 
-var obstacleSize = 30;
+var asteroidSize = 30;
+
+var moveSpeed = 3;
+
+var person = 0;
 
 var Button = function(config) {//button class
     this.x = config.x || 0;
@@ -14,14 +18,14 @@ var Button = function(config) {//button class
     this.label = config.label || "Click";
 };
 
-var Obstacle = function(x,y){//object class for obstacles
+var Asteroid = function(x,y){//object class for obstacles
     this.x = x;
     this.y = y;
     this.img = getImage("cute/Rock");
 };
 
-Obstacle.prototype.draw = function() {
-    image(this.img, this.x, this.y, obstacleSize, obstacleSize);
+Asteroid.prototype.draw = function() {
+    image(this.img, this.x, this.y, asteroidSize, asteroidSize);
 };
 
 var obstacles = []; //array for obstacles
@@ -108,8 +112,8 @@ var drawShirt = function(bodyX,bodyY,bitHeight){
     drawFace(bodyX,bodyY,bitHeight);
     noStroke();
     fill(5, 19, 150);
-    quad(bodyX,bodyY+bitHeight/50*92,bodyX,bodyY+bitHeight/50*55,bodyX+bitHeight/50*46,bodyY+bitHeight/50*45,bodyX+bitHeight/50*68,bodyY+bitHeight/50*92);
-    quad(bodyX,bodyY+bitHeight/50*92,bodyX,bodyY+bitHeight/50*55,bodyX-bitHeight/50*48,bodyY+bitHeight/50*45,bodyX-bitHeight/50*68,bodyY+bitHeight/50*92);
+    quad(bodyX,bodyY+bitHeight/50*92,bodyX,bodyY+bitHeight/50*55,bodyX+bitHeight/50*46,bodyY+bitHeight/50*45,bodyX+bitHeight/50*51,bodyY+bitHeight/50*92);
+    quad(bodyX,bodyY+bitHeight/50*92,bodyX,bodyY+bitHeight/50*55,bodyX-bitHeight/50*48,bodyY+bitHeight/50*45,bodyX-bitHeight/50*51,bodyY+bitHeight/50*92);
     fill (255,255,255);
     textSize(bitHeight/50*33);
     text("AB",bodyX-bitHeight/50*0,bodyY+bitHeight/50*72); //shirt
@@ -212,32 +216,105 @@ var gameOverScreen = function(){
 
 mouseClicked = function(){
     if(startButton1.isMouseInside()){
-        currentScene = 2;
+        currentScene = 4;
     }
     else if(startButton2.isMouseInside()){
-        currentScene = 3;   
+        currentScene = 4;   
     }
     else if(currentScene === 5){
         currentScene = 1;   
     }
 };
+
+var Player = function(x,y,h){//character object class
+    this.x = x;
+    this.y = y;
+    this.h = h;
+};
+
+var playerA = new Player(200,200,15);
+
+var playerB = new Player(200,200,30);
+
+Player.prototype.draw = function() {
+    this.x = constrain(this.x, 30, width-30);
+    drawBitmoji(this.x, this.y, this.h);
+    stroke(255, 255, 255);
+    noFill();
+    ellipse(this.x, this.y+6,50,50);
+};
+
+Player.prototype.moveLeft = function(){
+    this.x -= moveSpeed;
+};
+
+Player.prototype.moveRight = function(){
+    this.x += moveSpeed;
+};
+
+Player.prototype.moveUp = function(){
+    this.y -= moveSpeed;
+};
+
+Player.prototype.moveDown = function(){
+    this.y += moveSpeed;
+};
+
+Player.prototype.moveLeftUp = function(){
+    this.x -= moveSpeed;
+    this.y -= moveSpeed;
+};
+
+Player.prototype.moveRightUp = function(){
+    this.x += moveSpeed;
+    this.y -= moveSpeed;
+};
+
+Player.prototype.moveLeftDown = function(){
+    this.x -= moveSpeed;
+    this.y += moveSpeed;
+};
+
+Player.prototype.moveRightDown = function(){
+    this.x += moveSpeed;
+    this.y += moveSpeed;
+};
+
+Player.prototype.checkForHit = function(asteroid){
+    if (asteroid.x >= (this.x - 30) && asteroid.x <= (this.x + 30) && asteroid.y >= (this.y - 30) && asteroid.y <= (this.y +30)){
+           
+    }
+};
+
 var draw = function() {
     if(currentScene === 1){//start screen
         splashScreen();
     }
-    else if(currentScene === 2){//select player 1 player screen
+    if (currentScene === 2){//select player 1 player screen
     
     }
-    else if(currentScene === 3){//2 player screen
+    if (currentScene === 3){//2 player screen
         
     }
-    else if(currentScene === 4){//game screen
+    if (currentScene === 4){//game screen
+        background(0, 0, 0);
+        playerA.draw();
+        if(keyIsPressed && keyCode === UP){
+            playerA.moveUp();
+        }
+        if(keyIsPressed && keyCode === DOWN){
+            playerA.moveDown();
+        }
+        if(keyIsPressed && keyCode === LEFT){
+            playerA.moveLeft();   
+        }
+        if(keyIsPressed && keyCode === RIGHT){
+            playerA.moveRight();
+        }
         
     }
-    else if(currentScene === 5){//game over screen
+    if (currentScene === 5){//game over screen
         gameOverScreen();
     }
-    if (currentScene === 2){
-        background(0, 0, 0);
-    }
+
 };
