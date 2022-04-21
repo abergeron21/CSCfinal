@@ -10,6 +10,53 @@ var moveSpeed = 3;
 
 var person = 0;
 
+/* Background
+*/
+var ptStarsX = [];
+var ptStarsY = [];
+for(var j = 0; j<50; j++){//creates background static stars
+    ptStarsX.push(round(random(1,400)));
+    ptStarsY.push(round(random(1,400)));
+}
+
+var asteroid = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+
+asteroid.prototype.draw = function() {
+    noStroke();
+    fill(255, 0, 0);
+    triangle(this.x-42,this.y-25, this.x-66,this.y-46,this.x-36,this.y-36);
+    fill(255, 132, 0);
+    triangle(this.x-41,this.y-25, this.x+-54,this.y+-39,this.x-36,this.y+-36);
+    image(getImage("cute/Rock"), this.x-50,this.y-50,30,30);
+};
+var asteroids = [];
+for (var i = 0; i < 20; i++){
+    asteroids.push(new asteroid(i*(random(-50,-200)), i*(random(-50,-200))));
+}
+
+var bg = function(){//draws the animated background
+  background(0, 0, 0);
+  stroke(241, 242, 162);
+  strokeWeight(4);
+  for(var i = 0; i<50;i++){
+      point(ptStarsX[i],ptStarsY[i]);
+  }
+  for(var i = 0; i < 20; i++){//draws moving asteroids for background
+      asteroids[i].draw();
+      asteroids[i].x += 3;
+      asteroids[i].y += 3;
+      if(asteroids[i].x >= 450 || asteroids[i].y >= 450){
+        asteroids[i].x = random(0,-300);
+        asteroids[i].y = random(0,-350);
+      }
+  }
+  
+};
+
+
 var Button = function(config) {//button class
     this.x = config.x || 0;
     this.y = config.y || 0;
@@ -178,7 +225,7 @@ var drawBitmoji1 = function(bitmojiX,bitmojiY,h){
     }; //Bitmoji
 
 var splashScreen = function(){//start screen
-    background(0, 0, 0);
+    bg();
     textFont(f);
     textSize(42);
     fill(color1);
@@ -237,7 +284,8 @@ var playerA = new Player(200,200,15);
 var playerB = new Player(200,200,30);
 
 Player.prototype.draw = function() {
-    this.x = constrain(this.x, 30, width-30);
+    this.x = constrain(this.x, 35, width-35);
+    this.y = constrain(this.y, 30, height-40);
     drawBitmoji(this.x, this.y, this.h);
     stroke(255, 255, 255);
     noFill();
