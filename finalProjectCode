@@ -1,20 +1,17 @@
+/*************************************************************************************
+///////////////////////////////////Variables/////////////////////////////////////////*************************************************************************************/{
 var currentScene = 1;
-
 var f = createFont("monospace");
-
 var color1 = color(12, 242, 238);
-
 var asteroidSize = 30;
-
 var moveSpeed = 3;
-
 var person = 0;
-
-/* Background
-*/
+}
+/*************************************************************************************
+///////////////////////////////////Background/////////////////////////////////////////************************************************************************************/{
 var ptStarsX = [];
 var ptStarsY = [];
-for(var j = 0; j<50; j++){//creates background static stars
+for(var j = 0; j<50; j++){
     ptStarsX.push(round(random(1,400)));
     ptStarsY.push(round(random(1,400)));
 }
@@ -37,14 +34,14 @@ for (var i = 0; i < 20; i++){
     asteroids.push(new asteroid(i*(random(-50,-200)), i*(random(-50,-200))));
 }
 
-var bg = function(){//draws the animated background
+var bg = function(){
   background(0, 0, 0);
   stroke(241, 242, 162);
   strokeWeight(4);
   for(var i = 0; i<50;i++){
       point(ptStarsX[i],ptStarsY[i]);
   }
-  for(var i = 0; i < 20; i++){//draws moving asteroids for background
+  for(var i = 0; i < 15; i++){
       asteroids[i].draw();
       asteroids[i].x += 3;
       asteroids[i].y += 3;
@@ -55,6 +52,7 @@ var bg = function(){//draws the animated background
   }
   
 };
+}
 
 
 var Button = function(config) {//button class
@@ -80,14 +78,9 @@ var obstacles = []; //array for obstacles
 var startButton1 = new Button({//start button 1 player
     x: 125,
     y: 255,
-    label: "1 Player"
+    label: "Start"
 });
 
-var startButton2 = new Button({//start button 2 player
-    x: 125,
-    y: 325,
-    label: "2 Player"
-});
 
 Button.prototype.draw= function() {
     fill(color1);
@@ -102,6 +95,9 @@ Button.prototype.isMouseInside = function(){// checks if mouse clicks inside a b
     return mouseX > this.x && mouseX < (this.x + this.width) && mouseY > this.y && mouseY < (this.y + this.height);  
 };
 
+
+/*************************************************************************************
+///////////////////////////////////Bitmoji's/////////////////////////////////////////************************************************************************************/{
 var drawHead = function(bodyX,bodyY,bitHeight){
     fill(252, 212, 192);
     ellipse(bodyX,bodyY,bitHeight/50*83,bitHeight/50*110); //head
@@ -223,11 +219,11 @@ var drawBitmoji1 = function(bitmojiX,bitmojiY,h){
         //mouth
         line(bitmojiX-(h/100*6),bitmojiY+(h/100*27),bitmojiX+(h/100*12),bitmojiY+(h/100*25     ));
     }; //Bitmoji
-
+}
 var splashScreen = function(){//start screen
     bg();
     textFont(f);
-    textSize(42);
+    textSize(41);
     fill(color1);
     textAlign(CENTER,CENTER);
     text("Bitmoji Asteroid",200,50);
@@ -236,10 +232,15 @@ var splashScreen = function(){//start screen
     text("Click START",200, 230);
     textSize(25);
     startButton1.draw();
-    startButton2.draw();
+    
     drawBitmoji1(69,302,60);
     noStroke();
     drawBitmoji(336,302,30);
+    
+};
+
+var selectionScreen = function(){
+    bg();
     
 };
 
@@ -247,9 +248,6 @@ var onePlayerScreen = function(){
     
 };
 
-var twoPlayerScreen = function(){
-      
-};
 
 var gameOverScreen = function(){
     background(0, 0, 0);
@@ -263,12 +261,9 @@ var gameOverScreen = function(){
 
 mouseClicked = function(){
     if(startButton1.isMouseInside()){
-        currentScene = 4;
+        currentScene = 2;
     }
-    else if(startButton2.isMouseInside()){
-        currentScene = 4;   
-    }
-    else if(currentScene === 5){
+    else if(currentScene === 4){
         currentScene = 1;   
     }
 };
@@ -339,12 +334,10 @@ var draw = function() {
         splashScreen();
     }
     if (currentScene === 2){//select player 1 player screen
-    
-    }
-    if (currentScene === 3){//2 player screen
+        selectionScreen();
         
     }
-    if (currentScene === 4){//game screen
+    if (currentScene === 3){//game screen
         background(0, 0, 0);
         playerA.draw();
         if(keyIsPressed && keyCode === UP){
@@ -361,7 +354,7 @@ var draw = function() {
         }
         
     }
-    if (currentScene === 5){//game over screen
+    if (currentScene === 4){//game over screen
         gameOverScreen();
     }
 
