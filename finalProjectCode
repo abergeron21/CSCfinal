@@ -75,12 +75,23 @@ Asteroid.prototype.draw = function() {
 
 var obstacles = []; //array for obstacles
 
-var startButton1 = new Button({//start button 1 player
+var startButton = new Button({//start button 1 player
     x: 125,
-    y: 255,
+    y: 290,
     label: "Start"
 });
 
+var selectButton1 = new Button({//select left bitmoji
+    x:10,
+    y:200,
+    label: "Select"
+});
+
+var selectButton2 = new Button({//select left bitmoji
+    x:240,
+    y:200,
+    label: "Select"
+});
 
 Button.prototype.draw= function() {
     fill(color1);
@@ -229,9 +240,9 @@ var splashScreen = function(){//start screen
     text("Bitmoji Asteroid",200,50);
     textSize(20);
     text("By: Alex Bergeron & Jacob Hyun",200,100);
-    text("Click START",200, 230);
+    text("Click START",200, 250);
     textSize(25);
-    startButton1.draw();
+    startButton.draw();
     
     drawBitmoji1(69,302,60);
     noStroke();
@@ -241,13 +252,24 @@ var splashScreen = function(){//start screen
 
 var selectionScreen = function(){
     bg();
-    
+    drawBitmoji1(69,302,60);
+    noStroke();
+    drawBitmoji(336,302,30);
+    selectButton1.draw();
+    selectButton2.draw();
+    textSize(25);
+    fill(color1);
+    text("Move using the arrow keys\n to avoid the asteroids\nsurvive as long as you can", 200, 70);
 };
 
-var onePlayerScreen = function(){
-    
+var gameScreen = function(){
+    background(0, 0, 0);
+    stroke(241, 242, 162);
+    strokeWeight(4);
+    for(var i = 0; i<50;i++){
+        point(ptStarsX[i],ptStarsY[i]);
+    }
 };
-
 
 var gameOverScreen = function(){
     background(0, 0, 0);
@@ -260,10 +282,21 @@ var gameOverScreen = function(){
 };
 
 mouseClicked = function(){
-    if(startButton1.isMouseInside()){
+    if(startButton.isMouseInside()){
         currentScene = 2;
     }
-    else if(currentScene === 4){
+    
+    if(currentScene === 2 && selectButton1.isMouseInside()){
+        currentScene = 3;
+        person = 1;
+    }
+    
+        if(currentScene === 2 && selectButton2.isMouseInside()){
+        currentScene = 3;
+        person = 2;
+    }
+    
+    if(currentScene === 4){
         currentScene = 1;   
     }
 };
@@ -281,7 +314,12 @@ var playerB = new Player(200,200,30);
 Player.prototype.draw = function() {
     this.x = constrain(this.x, 35, width-35);
     this.y = constrain(this.y, 30, height-40);
-    drawBitmoji(this.x, this.y, this.h);
+    if(person === 1){
+        drawBitmoji1(this.x, this.y, this.h);
+    }
+    if(person === 2){
+        drawBitmoji(this.x,this.y, this.h);
+    }
     stroke(255, 255, 255);
     noFill();
     ellipse(this.x, this.y+6,50,50);
@@ -325,7 +363,7 @@ Player.prototype.moveRightDown = function(){
 
 Player.prototype.checkForHit = function(asteroid){
     if (asteroid.x >= (this.x - 30) && asteroid.x <= (this.x + 30) && asteroid.y >= (this.y - 30) && asteroid.y <= (this.y +30)){
-           
+        currentScene = 4;
     }
 };
 
@@ -339,21 +377,44 @@ var draw = function() {
     }
     if (currentScene === 3){//game screen
         background(0, 0, 0);
-        playerA.draw();
-        if(keyIsPressed && keyCode === UP){
-            playerA.moveUp();
+        stroke(241, 242, 162);
+        strokeWeight(4);
+        for(var i = 0; i<50;i++){
+            point(ptStarsX[i],ptStarsY[i]);
         }
-        if(keyIsPressed && keyCode === DOWN){
-            playerA.moveDown();
+        if (person === 1){
+            playerB.draw();
+            
+            if(keyIsPressed && keyCode === UP){
+                playerB.moveUp();
+            }
+            if(keyIsPressed && keyCode === DOWN){
+                playerB.moveDown();
+            }
+            if(keyIsPressed && keyCode === LEFT){
+                playerB.moveLeft();   
+            }
+            if(keyIsPressed && keyCode === RIGHT){
+                playerB.moveRight();
+            }
         }
-        if(keyIsPressed && keyCode === LEFT){
-            playerA.moveLeft();   
         }
-        if(keyIsPressed && keyCode === RIGHT){
-            playerA.moveRight();
+        if (person === 2){
+            playerA.draw();
+            
+            if(keyIsPressed && keyCode === UP){
+                playerA.moveUp();
+            }
+            if(keyIsPressed && keyCode === DOWN){
+                playerA.moveDown();
+            }
+            if(keyIsPressed && keyCode === LEFT){
+                playerA.moveLeft();   
+            }
+            if(keyIsPressed && keyCode === RIGHT){
+                playerA.moveRight();
+            }
         }
-        
-    }
     if (currentScene === 4){//game over screen
         gameOverScreen();
     }
