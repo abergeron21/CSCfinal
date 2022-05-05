@@ -66,12 +66,24 @@ var Button = function(config) {//button class
 var Asteroid = function(x,y){//object class for obstacles
     this.x = x;
     this.y = y;
-    this.img = getImage("cute/Rock");
 };
 
 Asteroid.prototype.draw = function() {
-    image(this.img, this.x, this.y, asteroidSize, asteroidSize);
+    image(getImage("cute/Rock"),this.x-50, this.y-50,30,30);
 };
+
+var asteroidLeft = [];
+var asteroidTop = [];
+var asteroidBot = [];
+var asteroidRight = [];
+for (var i = 0; i < 10; i++){
+    asteroidLeft.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
+    asteroidTop.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
+    asteroidBot.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
+    asteroidRight.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
+    }
+
+   
 
 var obstacles = []; //array for obstacles
 
@@ -382,6 +394,16 @@ var draw = function() {
         for(var i = 0; i<50;i++){
             point(ptStarsX[i],ptStarsY[i]);
         }
+        
+        for(var i = 0; i < 10; i++){
+            asteroidLeft[i].draw();
+            asteroidLeft[i].x += 3;
+            if(asteroidLeft[i].x >= 450){
+                asteroidLeft[i].x = random(0,-300);
+                asteroidLeft[i].y = random(0,400);
+                }
+             }
+        noStroke();
         if (person === 1){
             playerB.draw();
             
