@@ -266,11 +266,9 @@ var splashScreen = function(){//start screen
     text("Click START",200, 250);
     textSize(25);
     startButton.draw();
-    
     drawBitmoji1(69,302,60);
     noStroke();
     drawBitmoji(336,302,30);
-    
 };
 
 var selectionScreen = function(){
@@ -282,7 +280,7 @@ var selectionScreen = function(){
     selectButton2.draw();
     textSize(25);
     fill(color1);
-    text("Move using the arrow keys\n to avoid the asteroids\nGet to 10000 points and win", 200, 70);
+    text("Move using the arrow keys\n to avoid the asteroids\nGet to 20000 points and win", 200, 70);
 };
 
 var gameScreen = function(){
@@ -367,11 +365,6 @@ Player.prototype.moveDown = function(){
 };
 
 Player.prototype.checkForHit = function(asteroid){
-    
-    rect ( asteroid.x, asteroid.y , 25,25);
-    
-    rect ( this.x-15, this.y-10, 30,30);
-    
     if (this.x+15 > asteroid.x + 13 && this.x - 15< asteroid.x + 25  && this.y+15 > asteroid.y && this.y-15 < asteroid.y + 25){
         currentScene = 4;
     }
@@ -394,9 +387,10 @@ var draw = function() {
             point(ptStarsX[i],ptStarsY[i]);
         }
         fill(255, 0, 0);
+        textSize(20);
         text(score, 350, 20);
         if ( person === 1 ){
-        if( score >= 0 && score < 2000){
+        if( score >= 0 && score < 3000){
             for(var i = 0; i < 10; i++){
                 asteroidLeft[i].draw();
                 playerB.checkForHit(asteroidLeft[i]);
@@ -407,8 +401,8 @@ var draw = function() {
                     score += 50;
                 }
              }}
-        if (score >= 2000 && score < 5000){
-            if ( score === 2000){
+        if (score >= 3000 && score < 10000){
+            if ( score === 3000){
                 for ( var i = 0; i < 10; i++){
                     asteroidLeft[i].x = -1000;
                     asteroidLeft[i].y = -2000;
@@ -424,8 +418,8 @@ var draw = function() {
                     score += 50;
                 }}
              }
-        if (score >= 5000){
-            if ( score === 5000){
+        if (score >= 10000){
+            if ( score === 10000){
                 for ( var i = 0; i < 10; i++){
                     asteroidRight[i].x = -1000;
                     asteroidRight[i].y = -2000;
@@ -442,12 +436,12 @@ var draw = function() {
                 }
              }
              }
-        if ( score === 10000){
+        if ( score === 20000){
             currentScene = 5;
         }
         }
         if ( person === 2) {
-            if( score >= 0 && score < 2000){
+            if( score >= 0 && score < 3000){
             for(var i = 0; i < 10; i++){
                 asteroidLeft[i].draw();
                 playerA.checkForHit(asteroidLeft[i]);
@@ -458,8 +452,8 @@ var draw = function() {
                     score += 50;
                 }
              }}
-        if (score >= 2000 && score < 5000){
-            if ( score === 2000){
+        if (score >= 3000 && score < 10000){
+            if ( score === 3000){
                 for ( var i = 0; i < 10; i++){
                     asteroidLeft[i].x = -1000;
                     asteroidLeft[i].y = -2000;
@@ -475,8 +469,8 @@ var draw = function() {
                     score += 50;
                 }}
              }
-        if (score >= 5000){
-            if ( score === 5000){
+        if (score >= 10000){
+            if ( score === 10000){
                 for ( var i = 0; i < 10; i++){
                     asteroidRight[i].x = -1000;
                     asteroidRight[i].y = -2000;
@@ -493,7 +487,7 @@ var draw = function() {
                 }
              }
              }
-        if ( score === 10000){
+        if ( score === 20000){
             currentScene = 5;
         }
         }
