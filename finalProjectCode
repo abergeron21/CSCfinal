@@ -6,6 +6,7 @@ var color1 = color(12, 242, 238);
 var asteroidSize = 30;
 var moveSpeed = 3;
 var person = 0;
+var score = 0;
 }
 /*************************************************************************************
 ///////////////////////////////////Background/////////////////////////////////////////************************************************************************************/{
@@ -17,11 +18,10 @@ for(var j = 0; j<50; j++){
 }
 
 var asteroid = function(x,y){
-    this.x = x;
-    this.y = y;
+    this.x =x;
+    this.y =y;
 };
-
-asteroid.prototype.draw = function() {
+asteroid.prototype.splashDraw = function() {
     noStroke();
     fill(255, 0, 0);
     triangle(this.x-42,this.y-25, this.x-66,this.y-46,this.x-36,this.y-36);
@@ -29,6 +29,7 @@ asteroid.prototype.draw = function() {
     triangle(this.x-41,this.y-25, this.x+-54,this.y+-39,this.x-36,this.y+-36);
     image(getImage("cute/Rock"), this.x-50,this.y-50,30,30);
 };
+
 var asteroids = [];
 for (var i = 0; i < 20; i++){
     asteroids.push(new asteroid(i*(random(-50,-200)), i*(random(-50,-200))));
@@ -42,7 +43,7 @@ var bg = function(){
       point(ptStarsX[i],ptStarsY[i]);
   }
   for(var i = 0; i < 15; i++){
-      asteroids[i].draw();
+      asteroids[i].splashDraw();
       asteroids[i].x += 3;
       asteroids[i].y += 3;
       if(asteroids[i].x >= 450 || asteroids[i].y >= 450){
@@ -53,8 +54,41 @@ var bg = function(){
   
 };
 }
+/*************************************************************************************
+///////////////////////////////////Asteroid/////////////////////////////////////////************************************************************************************/{
+var asteroidT = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+var asteroidL = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+var asteroidR = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+asteroidT.prototype.draw = function() {
+    image(getImage("cute/Rock"), this.x,this.y,30,30);
+};
+asteroidL.prototype.draw = function() {
+    image(getImage("cute/Rock"), this.x,this.y,30,30);
+};
+asteroidR.prototype.draw = function() {
+    image(getImage("cute/Rock"), this.x,this.y,30,30);
+};
 
-
+var asteroidLeft = [];
+var asteroidTop = [];
+var asteroidRight = [];
+for (var i = 0; i < 10; i++){
+    asteroidLeft.push(new asteroidL((random(-50,-400)), (random(10,390))));
+    asteroidTop.push(new asteroidT((random(0,400)), (random(-50,-400))));
+    asteroidRight.push(new asteroidR((random(450,800)), (random(10,390))));
+    }
+}
+/*************************************************************************************
+///////////////////////////////////Button/////////////////////////////////////////************************************************************************************/{
 var Button = function(config) {//button class
     this.x = config.x || 0;
     this.y = config.y || 0;
@@ -63,29 +97,6 @@ var Button = function(config) {//button class
     this.label = config.label || "Click";
 };
 
-var Asteroid = function(x,y){//object class for obstacles
-    this.x = x;
-    this.y = y;
-};
-
-Asteroid.prototype.draw = function() {
-    image(getImage("cute/Rock"),this.x-50, this.y-50,30,30);
-};
-
-var asteroidLeft = [];
-var asteroidTop = [];
-var asteroidBot = [];
-var asteroidRight = [];
-for (var i = 0; i < 10; i++){
-    asteroidLeft.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
-    asteroidTop.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
-    asteroidBot.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
-    asteroidRight.push(new asteroid(i*(random(-50,-200)), i*(random(0,400                  ))));
-    }
-
-   
-
-var obstacles = []; //array for obstacles
 
 var startButton = new Button({//start button 1 player
     x: 125,
@@ -117,7 +128,7 @@ Button.prototype.draw= function() {
 Button.prototype.isMouseInside = function(){// checks if mouse clicks inside a button
     return mouseX > this.x && mouseX < (this.x + this.width) && mouseY > this.y && mouseY < (this.y + this.height);  
 };
-
+}
 
 /*************************************************************************************
 ///////////////////////////////////Bitmoji's/////////////////////////////////////////************************************************************************************/{
@@ -271,7 +282,7 @@ var selectionScreen = function(){
     selectButton2.draw();
     textSize(25);
     fill(color1);
-    text("Move using the arrow keys\n to avoid the asteroids\nsurvive as long as you can", 200, 70);
+    text("Move using the arrow keys\n to avoid the asteroids\nGet to 10000 points and win", 200, 70);
 };
 
 var gameScreen = function(){
@@ -290,11 +301,17 @@ var gameOverScreen = function(){
     fill(255, 0, 0);
     text("GAME OVER", 200, 100);
     textSize(30);
-    text("Click to Restart", 200, 250);
+    text("Click Restart", 200, 250);
 };
 
+var winScreen = function(){
+    bg();
+    fill(0, 230, 255);
+    textSize(30);
+    text("CONGRATULATIONS!!!\n YOU WIN", 200,200);
+};
 mouseClicked = function(){
-    if(startButton.isMouseInside()){
+    if(startButton.isMouseInside() && currentScene === 1){
         currentScene = 2;
     }
     
@@ -306,10 +323,6 @@ mouseClicked = function(){
         if(currentScene === 2 && selectButton2.isMouseInside()){
         currentScene = 3;
         person = 2;
-    }
-    
-    if(currentScene === 4){
-        currentScene = 1;   
     }
 };
 
@@ -334,7 +347,7 @@ Player.prototype.draw = function() {
     }
     stroke(255, 255, 255);
     noFill();
-    ellipse(this.x, this.y+6,50,50);
+    rect(this.x-20, this.y-18,40,45);
 };
 
 Player.prototype.moveLeft = function(){
@@ -353,32 +366,18 @@ Player.prototype.moveDown = function(){
     this.y += moveSpeed;
 };
 
-Player.prototype.moveLeftUp = function(){
-    this.x -= moveSpeed;
-    this.y -= moveSpeed;
-};
-
-Player.prototype.moveRightUp = function(){
-    this.x += moveSpeed;
-    this.y -= moveSpeed;
-};
-
-Player.prototype.moveLeftDown = function(){
-    this.x -= moveSpeed;
-    this.y += moveSpeed;
-};
-
-Player.prototype.moveRightDown = function(){
-    this.x += moveSpeed;
-    this.y += moveSpeed;
-};
-
 Player.prototype.checkForHit = function(asteroid){
-    if (asteroid.x >= (this.x - 30) && asteroid.x <= (this.x + 30) && asteroid.y >= (this.y - 30) && asteroid.y <= (this.y +30)){
+    
+    rect ( asteroid.x, asteroid.y , 25,25);
+    
+    rect ( this.x-15, this.y-10, 30,30);
+    
+    if (this.x+15 > asteroid.x + 13 && this.x - 15< asteroid.x + 25  && this.y+15 > asteroid.y && this.y-15 < asteroid.y + 25){
         currentScene = 4;
     }
 };
 
+    
 var draw = function() {
     if(currentScene === 1){//start screen
         splashScreen();
@@ -394,15 +393,110 @@ var draw = function() {
         for(var i = 0; i<50;i++){
             point(ptStarsX[i],ptStarsY[i]);
         }
-        
-        for(var i = 0; i < 10; i++){
-            asteroidLeft[i].draw();
-            asteroidLeft[i].x += 3;
-            if(asteroidLeft[i].x >= 450){
-                asteroidLeft[i].x = random(0,-300);
-                asteroidLeft[i].y = random(0,400);
+        fill(255, 0, 0);
+        text(score, 350, 20);
+        if ( person === 1 ){
+        if( score >= 0 && score < 2000){
+            for(var i = 0; i < 10; i++){
+                asteroidLeft[i].draw();
+                playerB.checkForHit(asteroidLeft[i]);
+                asteroidLeft[i].x += 2;
+                if(asteroidLeft[i].x >= 450){
+                    asteroidLeft[i].x = random(-50,-300);
+                    asteroidLeft[i].y = random(20,380);
+                    score += 50;
+                }
+             }}
+        if (score >= 2000 && score < 5000){
+            if ( score === 2000){
+                for ( var i = 0; i < 10; i++){
+                    asteroidLeft[i].x = -1000;
+                    asteroidLeft[i].y = -2000;
+                }
+            }
+            for(var i = 0; i < 10; i++){
+                asteroidRight[i].draw();
+                playerB.checkForHit(asteroidRight[i]);
+                asteroidRight[i].x -= 3;
+                if(asteroidRight[i].x <= -100){
+                    asteroidRight[i].x = random(450,700);
+                    asteroidRight[i].y = random(20,380);
+                    score += 50;
+                }}
+             }
+        if (score >= 5000){
+            if ( score === 5000){
+                for ( var i = 0; i < 10; i++){
+                    asteroidRight[i].x = -1000;
+                    asteroidRight[i].y = -2000;
+                }
+            }
+            for(var i = 0; i < 10; i++){
+                asteroidTop[i].draw();
+                playerB.checkForHit(asteroidTop[i]);
+                asteroidTop[i].y += 4;
+                if(asteroidTop[i].y >= 450){
+                    asteroidTop[i].x = random(10,390);
+                    asteroidTop[i].y = random(-50,-300);
+                    score += 50;
                 }
              }
+             }
+        if ( score === 10000){
+            currentScene = 5;
+        }
+        }
+        if ( person === 2) {
+            if( score >= 0 && score < 2000){
+            for(var i = 0; i < 10; i++){
+                asteroidLeft[i].draw();
+                playerA.checkForHit(asteroidLeft[i]);
+                asteroidLeft[i].x += 2;
+                if(asteroidLeft[i].x >= 450){
+                    asteroidLeft[i].x = random(-50,-300);
+                    asteroidLeft[i].y = random(20,380);
+                    score += 50;
+                }
+             }}
+        if (score >= 2000 && score < 5000){
+            if ( score === 2000){
+                for ( var i = 0; i < 10; i++){
+                    asteroidLeft[i].x = -1000;
+                    asteroidLeft[i].y = -2000;
+                }
+            }
+            for(var i = 0; i < 10; i++){
+                asteroidRight[i].draw();
+                playerA.checkForHit(asteroidRight[i]);
+                asteroidRight[i].x -= 3;
+                if(asteroidRight[i].x <= -100){
+                    asteroidRight[i].x = random(450,700);
+                    asteroidRight[i].y = random(20,380);
+                    score += 50;
+                }}
+             }
+        if (score >= 5000){
+            if ( score === 5000){
+                for ( var i = 0; i < 10; i++){
+                    asteroidRight[i].x = -1000;
+                    asteroidRight[i].y = -2000;
+                }
+            }
+            for(var i = 0; i < 10; i++){
+                asteroidTop[i].draw();
+                playerA.checkForHit(asteroidTop[i]);
+                asteroidTop[i].y += 4;
+                if(asteroidTop[i].y >= 450){
+                    asteroidTop[i].x = random(10,390);
+                    asteroidTop[i].y = random(-50,-300);
+                    score += 50;
+                }
+             }
+             }
+        if ( score === 10000){
+            currentScene = 5;
+        }
+        }
         noStroke();
         if (person === 1){
             playerB.draw();
@@ -440,5 +534,7 @@ var draw = function() {
     if (currentScene === 4){//game over screen
         gameOverScreen();
     }
-
+    if ( currentScene ===5){ // win screen
+        winScreen();
+    }
 };
